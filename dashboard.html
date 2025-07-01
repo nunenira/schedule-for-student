@@ -169,6 +169,27 @@
         padding: 30px 20px;
       }
 
+      .current-time-card {
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+      }
+
+      .current-time {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .current-date {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
       .demo-message {
         background: #fff3cd;
         border: 1px solid #ffeaa7;
@@ -228,7 +249,7 @@
 
       .dashboard-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
         gap: 30px;
         margin-bottom: 30px;
       }
@@ -431,6 +452,63 @@
         animation: spin 1s linear infinite;
       }
 
+      .assignment-item {
+        padding: 15px;
+        margin-bottom: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #1e88e5;
+        transition: all 0.3s ease;
+      }
+
+      .assignment-item:hover {
+        background: #e3f2fd;
+        transform: translateX(3px);
+      }
+
+      .assignment-item.overdue {
+        border-left-color: #dc3545;
+        background: #fff5f5;
+      }
+
+      .assignment-item.due-soon {
+        border-left-color: #ffc107;
+        background: #fffbf0;
+      }
+
+      .assignment-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .assignment-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: #666;
+      }
+
+      .assignment-subject {
+        background: white;
+        padding: 2px 8px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      .assignment-period {
+        font-weight: 500;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 20px;
+        color: #666;
+        font-style: italic;
+      }
+
       .quick-actions {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -529,6 +607,11 @@
     </div>
 
     <div class="dashboard-container">
+      <div class="current-time-card">
+        <div class="current-time" id="currentTime">Loading...</div>
+        <div class="current-date" id="currentDate">Loading...</div>
+      </div>
+
       <div class="demo-message">
         <i class="bi bi-info-circle"></i>
         <strong>Real Schedule:</strong> This shows the actual timetable for
@@ -592,6 +675,21 @@
             </div>
           </div>
         </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon">
+              <i class="bi bi-file-text"></i>
+            </div>
+            <h2 class="card-title">งานวันนี้</h2>
+          </div>
+          <div id="todayAssignmentsContent">
+            <div class="loading-content">
+              <i class="bi bi-arrow-clockwise"></i>
+              กำลังโหลดงาน...
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="card schedule-container">
@@ -642,6 +740,626 @@
         </div>
       </div>
     </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+      import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        getDoc,
+        collection,
+        query,
+        where,
+        onSnapshot,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyBfrhiskCagKW3X-IybZYZh0_K4F1j7724",
+        authDomain: "schedule-for-student.firebaseapp.com",
+        projectId: "schedule-for-student",
+        storageBucket: "schedule-for-student.firebasestorage.app",
+        messagingSenderId: "454469640747",
+        appId: "1:454469640747:web:991147e163e36e9d2bc06e",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      let currentUser = null;
+      let currentStudentData = null;
+      let currentSchedule = null;
+      let assignments = [];
+      let assignmentListener = null;
+
+      // ข้อมูลตารางเรียนจาก script.js เดิม
+      const scheduleData = {
+        "ม.6": {
+          5: {
+            Monday: [
+              "ฟิสิกส์<br><small>ห้อง 911</small>",
+              "ฟิสิกส์<br><small>ห้อง 911</small>",
+              "ศึกษาสร้างองค์ความรู้<br><small>ห้อง 801</small>",
+              "ศึกษาสร้างองค์ความรู้<br><small>ห้อง 801</small>",
+              "",
+              "คณิตเพิ่ม<br><small>ห้อง 1126</small>",
+              "อังกฤษเพื่อการศึกษาต่อ<br><small>ห้อง 1126</small>",
+              "พละ<br><small>ลาน 12</small>",
+              "อังกฤษฟังพูด<br><small>ห้อง 1126</small>",
+              "",
+            ],
+            Tuesday: [
+              "คณิตเพิ่ม<br><small>ห้อง 1126</small>",
+              "ประวัติศาสตร์<br><small>ห้อง 1126</small>",
+              "ฟิสิกส์<br><small>ห้อง 911</small>",
+              "ฟิสิกส์<br><small>ห้อง 911</small>",
+              "",
+              "อังกฤษเสริมทักษะ<br><small>ห้อง 1126</small>",
+              "อังกฤษเพื่อการศึกษาต่อ<br><small>ห้อง 1126</small>",
+              "อังกฤษเพื่อการสื่อสาร<br><small>ห้อง 1126</small>",
+              "",
+            ],
+            Wednesday: [
+              "อังกฤษเสริมทักษะ<br><small>ห้อง 1126</small>",
+              "ประวัติศาสตร์<br><small>ห้อง 1126</small>",
+              "โครงงาน<br><small>ห้อง 515,1231</small>",
+              "โครงงาน<br><small>ห้อง 515,1231</small>",
+              "",
+              "ไทย<br><small>ห้อง 1126</small>",
+              "เคมี<br><small>ห้อง 331</small>",
+              "ศิลปะ<br><small>ห้อง 702</small>",
+              "",
+              "",
+            ],
+            Thursday: [
+              "เทคโนโลยีสารสนเทศ<br><small>ห้อง 513</small>",
+              "เทคโนโลยีสารสนเทศ<br><small>ห้อง 513</small>",
+              "แนะแนว<br><small>ห้อง 1222</small>",
+              "",
+              "ชีววิทยา<br><small>ห้อง 321</small>",
+              "ชีววิทยา<br><small>ห้อง 321</small>",
+              "คณิตเพิ่ม<br><small>ห้อง 1126</small>",
+              "กิจกรรม",
+              "กิจกรรมรักษาดินแดน",
+            ],
+            Friday: [
+              "ไทย<br><small>ห้อง 1126</small>",
+              "อังกฤษฟังพูด<br><small>ห้อง 1126</small>",
+              "คณิตเพิ่ม<br><small>ห้อง 1126</small>",
+              "ชีววิทยา<br><small>321</small>",
+              "",
+              "อังกฤษเสริมทักษะ<br><small>ห้อง 1126</small>",
+              "เคมี<br><small>ห้อง 331</small>",
+              "เคมี<br><small>ห้อง 331</small>",
+              "",
+              "",
+            ],
+          },
+        },
+      };
+
+      const timeSlots = [
+        { time: "08:30 - 09:20", period: 1 },
+        { time: "09:20 - 10:10", period: 2 },
+        { time: "10:15 - 11:05", period: 3 },
+        { time: "11:05 - 11:55", period: 4 },
+        { time: "11:55 - 12:45", period: 5 },
+        { time: "12:45 - 13:35", period: 6 },
+        { time: "13:35 - 14:25", period: 7 },
+        { time: "14:30 - 15:20", period: 8 },
+        { time: "15:20 - 16:10", period: 9 },
+        { time: "16:10 - 17:00", period: 10 },
+      ];
+
+      // Bangkok timezone utilities
+      function getBangkokTime() {
+        return new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+        );
+      }
+
+      function formatBangkokTime(date) {
+        return date.toLocaleString("th-TH", {
+          timeZone: "Asia/Bangkok",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        });
+      }
+
+      function formatBangkokDate(date) {
+        return date.toLocaleDateString("th-TH", {
+          timeZone: "Asia/Bangkok",
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      function updateCurrentTime() {
+        const now = getBangkokTime();
+        document.getElementById("currentTime").textContent =
+          formatBangkokTime(now);
+        document.getElementById("currentDate").textContent =
+          formatBangkokDate(now);
+      }
+
+      // Update time every second
+      setInterval(updateCurrentTime, 1000);
+      updateCurrentTime();
+
+      showLoading(true);
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user && user.emailVerified) {
+          currentUser = user;
+          await loadUserData(user);
+        } else {
+          showLoading(false);
+          window.location.href = "index.html";
+        }
+      });
+
+      async function loadUserData(user) {
+        try {
+          const studentDoc = await getDoc(doc(db, "students", user.uid));
+
+          if (studentDoc.exists()) {
+            currentStudentData = studentDoc.data();
+            updateUserInfo(currentStudentData);
+            loadScheduleForClass(
+              currentStudentData.gradeLevel,
+              currentStudentData.classroom
+            );
+            await loadUserAssignments(user.uid);
+          } else {
+            console.log("Student data not found");
+            window.location.href = "index.html";
+          }
+        } catch (error) {
+          console.error("Error loading user data:", error);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function updateUserInfo(studentData) {
+        document.getElementById("userName").textContent =
+          studentData.studentId || "Student";
+        document.getElementById("userClass").textContent = `${
+          studentData.gradeLevel || ""
+        }/${studentData.classroom || ""}`;
+
+        document.getElementById("studentIdValue").textContent =
+          studentData.studentId || "N/A";
+        document.getElementById("gradeLevelValue").textContent =
+          studentData.gradeLevel || "N/A";
+        document.getElementById("classroomValue").textContent =
+          studentData.classroom || "N/A";
+        document.getElementById("emailValue").textContent =
+          currentUser.email || "N/A";
+      }
+
+      async function loadUserAssignments(userId) {
+        try {
+          if (assignmentListener) {
+            assignmentListener();
+          }
+
+          const assignmentsQuery = query(
+            collection(db, "assignments"),
+            where("userId", "==", userId)
+          );
+
+          assignmentListener = onSnapshot(
+            assignmentsQuery,
+            (snapshot) => {
+              assignments = [];
+              snapshot.forEach((doc) => {
+                const data = doc.data();
+                let dueDate;
+
+                if (data.dueDate) {
+                  if (data.dueDate.toDate) {
+                    dueDate = data.dueDate.toDate();
+                  } else if (data.dueDate.seconds) {
+                    dueDate = new Date(data.dueDate.seconds * 1000);
+                  } else {
+                    dueDate = new Date(data.dueDate);
+                  }
+                } else {
+                  dueDate = new Date();
+                }
+
+                assignments.push({
+                  id: doc.id,
+                  ...data,
+                  dueDate: dueDate,
+                });
+              });
+
+              assignments.sort(
+                (a, b) => new Date(a.dueDate) - new Date(b.dueDate)
+              );
+              renderTodayAssignments();
+            },
+            (error) => {
+              console.error("Error listening to assignments:", error);
+            }
+          );
+        } catch (error) {
+          console.error("Error setting up assignment listener:", error);
+        }
+      }
+
+      function renderTodayAssignments() {
+        const container = document.getElementById("todayAssignmentsContent");
+        const now = getBangkokTime();
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+
+        const todayAssignments = assignments.filter((assignment) => {
+          if (assignment.completed) return false;
+
+          const assignmentDate = new Date(assignment.dueDate);
+          const assignmentDay = new Date(
+            assignmentDate.getFullYear(),
+            assignmentDate.getMonth(),
+            assignmentDate.getDate()
+          );
+
+          return assignmentDay.getTime() === today.getTime();
+        });
+
+        if (todayAssignments.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-check-circle"></i>
+              <p>ไม่มีงานส่งวันนี้</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = todayAssignments
+          .map((assignment) => {
+            const dueTime = new Date(assignment.dueDate);
+            const isPastDue = dueTime < now;
+            const isDueSoon = dueTime - now < 2 * 60 * 60 * 1000; // 2 hours
+
+            let statusClass = "";
+            if (isPastDue) statusClass = "overdue";
+            else if (isDueSoon) statusClass = "due-soon";
+
+            let periodText = "";
+            if (assignment.period === "end-of-day") {
+              periodText = "ปลายวัน";
+            } else if (assignment.period) {
+              periodText = `คาบ ${assignment.period}`;
+            }
+
+            return `
+            <div class="assignment-item ${statusClass}">
+              <div class="assignment-title">${
+                assignment.title || "Untitled"
+              }</div>
+              <div class="assignment-meta">
+                <span class="assignment-subject">${
+                  assignment.subject || "No subject"
+                }</span>
+                <span class="assignment-period">${periodText}</span>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      // ฟังก์ชันจาก script.js เดิม
+      function loadScheduleForClass(gradeLevel, classroom) {
+        if (scheduleData[gradeLevel] && scheduleData[gradeLevel][classroom]) {
+          currentSchedule = scheduleData[gradeLevel][classroom];
+          displayScheduleTable();
+          displayTodaySchedule();
+          updateCurrentClass();
+        } else {
+          document.getElementById("scheduleContent").innerHTML = `
+            <p style="color: #666; text-align: center; padding: 20px;">
+              <i class="bi bi-calendar-x" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+              ตารางเรียนสำหรับ ${gradeLevel}/${classroom} ยังไม่พร้อมใช้งาน
+            </p>
+          `;
+        }
+      }
+
+      function displayScheduleTable() {
+        const scheduleHTML = `
+          <table class="schedule-table">
+            <thead>
+              <tr>
+                <th>คาบ</th>
+                <th>เวลา</th>
+                <th>จันทร์</th>
+                <th>อังคาร</th>
+                <th>พุธ</th>
+                <th>พฤหัสบดี</th>
+                <th>ศุกร์</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${timeSlots
+                .map((slot) => {
+                  const dayNames = [
+                    "Monday",
+                    "Tuesday",
+                    "Wednesday",
+                    "Thursday",
+                    "Friday",
+                  ];
+                  return `
+                    <tr data-period="${slot.period}">
+                      <td>${slot.period}</td>
+                      <td>${slot.time}</td>
+                      ${dayNames
+                        .map((day) => {
+                          const subject =
+                            currentSchedule[day][slot.period - 1] || "-";
+                          return `<td>${subject}</td>`;
+                        })
+                        .join("")}
+                    </tr>
+                  `;
+                })
+                .join("")}
+            </tbody>
+          </table>
+        `;
+
+        document.getElementById("scheduleContent").innerHTML = scheduleHTML;
+      }
+
+      function stripHTML(html) {
+        const temp = document.createElement("div");
+        temp.innerHTML = html;
+        return temp.textContent || temp.innerText || "";
+      }
+
+      function getSubjectName(fullSubject) {
+        return fullSubject.split("<br>")[0];
+      }
+
+      function displayTodaySchedule() {
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        const now = getBangkokTime();
+        const today = now.getDay();
+        const todayName = days[today];
+
+        const todayScheduleContainer = document.getElementById(
+          "todayScheduleContent"
+        );
+
+        if (today === 0 || today === 6) {
+          todayScheduleContainer.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #666;">
+              <i class="bi bi-calendar-x" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+              <p>วันหยุด - ไม่มีเรียน</p>
+            </div>
+          `;
+          return;
+        }
+
+        if (!currentSchedule[todayName]) {
+          todayScheduleContainer.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #666;">
+              <i class="bi bi-calendar-x" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+              <p>ไม่มีตารางเรียนสำหรับวันนี้</p>
+            </div>
+          `;
+          return;
+        }
+
+        const todaySubjects = currentSchedule[todayName];
+        const scheduleHTML = timeSlots
+          .map((slot, index) => {
+            const subject = todaySubjects[slot.period - 1];
+            if (!subject || subject.trim() === "") {
+              return `
+                <div class="today-class-item empty" data-period="${slot.period}">
+                  <div class="class-time">${slot.time}</div>
+                  <div class="class-subject">ว่าง</div>
+                </div>
+              `;
+            }
+            return `
+              <div class="today-class-item" data-period="${slot.period}">
+                <div class="class-time">${slot.time}</div>
+                <div class="class-subject">${getSubjectName(subject)}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        todayScheduleContainer.innerHTML = scheduleHTML;
+      }
+
+      function updateCurrentClass() {
+        const now = getBangkokTime();
+        const currentTime = now.getHours() * 60 + now.getMinutes();
+        const days = [
+          "Sunday",
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+        ];
+        const today = days[now.getDay()];
+
+        if (
+          today === "Sunday" ||
+          today === "Saturday" ||
+          !currentSchedule ||
+          !currentSchedule[today]
+        ) {
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card">
+              <div class="class-status">วันหยุด</div>
+              <div class="class-name">ไม่มีเรียน</div>
+            </div>
+          `;
+          return;
+        }
+
+        let currentClass = null;
+        let nextClass = null;
+        let currentPeriod = null;
+
+        for (let i = 0; i < timeSlots.length; i++) {
+          const slot = timeSlots[i];
+
+          const [startHour, startMin] = slot.time
+            .split(" - ")[0]
+            .split(":")
+            .map(Number);
+          const [endHour, endMin] = slot.time
+            .split(" - ")[1]
+            .split(":")
+            .map(Number);
+          const startTime = startHour * 60 + startMin;
+          const endTime = endHour * 60 + endMin;
+
+          if (currentTime >= startTime && currentTime <= endTime) {
+            const subject = currentSchedule[today][slot.period - 1];
+            if (subject && subject.trim() !== "") {
+              currentClass = getSubjectName(subject);
+              currentPeriod = slot.period;
+            }
+
+            // Find next class
+            for (let j = i + 1; j < timeSlots.length; j++) {
+              const nextSubject =
+                currentSchedule[today][timeSlots[j].period - 1];
+              if (nextSubject && nextSubject.trim() !== "") {
+                nextClass = getSubjectName(nextSubject);
+                break;
+              }
+            }
+            break;
+          } else if (currentTime < startTime) {
+            const subject = currentSchedule[today][slot.period - 1];
+            if (subject && subject.trim() !== "") {
+              nextClass = getSubjectName(subject);
+              break;
+            }
+          }
+        }
+
+        if (currentClass) {
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card active">
+              <div class="class-status">กำลังเรียน</div>
+              <div class="class-name">${currentClass}</div>
+              <div class="class-period">คาบที่ ${currentPeriod}</div>
+            </div>
+            ${
+              nextClass
+                ? `
+                  <div class="next-class-card">
+                    <div class="class-status">คาบต่อไป</div>
+                    <div class="class-name">${nextClass}</div>
+                  </div>
+                `
+                : ""
+            }
+          `;
+
+          highlightCurrentPeriod(currentPeriod);
+        } else if (nextClass) {
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card">
+              <div class="class-status">คาบต่อไป</div>
+              <div class="class-name">${nextClass}</div>
+            </div>
+          `;
+        } else {
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card">
+              <div class="class-status">หมดเวลาเรียนแล้ว</div>
+              <div class="class-name">ไม่มีคาบเรียน</div>
+            </div>
+          `;
+        }
+      }
+
+      function highlightCurrentPeriod(period) {
+        document.querySelectorAll(".schedule-table tbody tr").forEach((row) => {
+          row.classList.remove("current-period");
+        });
+
+        document.querySelectorAll(".today-class-item").forEach((item) => {
+          item.classList.remove("current-period");
+        });
+
+        const currentRow = document.querySelector(`[data-period="${period}"]`);
+        if (currentRow) {
+          currentRow.classList.add("current-period");
+        }
+      }
+
+      function showLoading(show = true) {
+        const overlay = document.getElementById("loadingOverlay");
+        overlay.style.display = show ? "flex" : "none";
+      }
+
+      async function logout() {
+        try {
+          showLoading(true);
+          if (assignmentListener) {
+            assignmentListener();
+          }
+          await signOut(auth);
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("Logout error:", error);
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function showFeature(feature) {
+        alert(`${feature} feature coming soon!`);
+      }
+
+      // Auto-refresh every minute
+      setInterval(() => {
+        if (currentUser && currentSchedule) {
+          updateCurrentClass();
+          renderTodayAssignments();
+        }
+      }, 60000);
+
+      window.logout = logout;
+      window.showFeature = showFeature;
+    </script>
 
     <script type="module" src="firebase-config.js"></script>
     <script src="script.js"></script>

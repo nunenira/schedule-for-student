@@ -145,6 +145,27 @@
         padding: 30px 20px;
       }
 
+      .current-time-card {
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        color: white;
+        padding: 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+      }
+
+      .current-time {
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .current-date {
+        font-size: 14px;
+        opacity: 0.9;
+      }
+
       .alert {
         padding: 12px 15px;
         border-radius: 8px;
@@ -817,6 +838,11 @@
     </div>
 
     <div class="container">
+      <div class="current-time-card">
+        <div class="current-time" id="currentTime">Loading...</div>
+        <div class="current-date" id="currentDate">Loading...</div>
+      </div>
+
       <div class="alert alert-success" id="successAlert"></div>
       <div class="alert alert-error" id="errorAlert"></div>
 
@@ -1035,8 +1061,58 @@
       let currentStudentData = null;
       let assignments = [];
       let assignmentListener = null;
-      let currentCalendarDate = new Date();
+      let currentCalendarDate = getBangkokTime();
       let editingAssignmentId = null;
+
+      // Bangkok timezone utilities
+      function getBangkokTime() {
+        return new Date(
+          new Date().toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+        );
+      }
+
+      function formatBangkokTime(date) {
+        return date.toLocaleString("th-TH", {
+          timeZone: "Asia/Bangkok",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        });
+      }
+
+      function formatBangkokDate(date) {
+        return date.toLocaleDateString("th-TH", {
+          timeZone: "Asia/Bangkok",
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+      }
+
+      function getBangkokDateOnly(date = getBangkokTime()) {
+        const bangkokDate = new Date(
+          date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+        );
+        return new Date(
+          bangkokDate.getFullYear(),
+          bangkokDate.getMonth(),
+          bangkokDate.getDate()
+        );
+      }
+
+      function updateCurrentTime() {
+        const now = getBangkokTime();
+        document.getElementById("currentTime").textContent =
+          formatBangkokTime(now);
+        document.getElementById("currentDate").textContent =
+          formatBangkokDate(now);
+      }
+
+      // Update time every second
+      setInterval(updateCurrentTime, 1000);
+      updateCurrentTime();
 
       showLoading(true);
 
@@ -1160,7 +1236,11 @@
       function formatDate(date) {
         if (!date) return "No date";
         try {
-          return new Date(date).toLocaleDateString("en-US", {
+          // Convert to Bangkok time for display
+          const bangkokDate = new Date(
+            date.toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+          );
+          return bangkokDate.toLocaleDateString("th-TH", {
             weekday: "long",
             month: "long",
             day: "numeric",
@@ -1306,7 +1386,7 @@
         assignmentsList.innerHTML = activeAssignments
           .map((assignment) => {
             const dueDate = new Date(assignment.dueDate);
-            const now = new Date();
+            const now = getBangkokTime();
             const isOverdue = dueDate < now;
             const isDueSoon = dueDate - now < 2 * 24 * 60 * 60 * 1000;
 
@@ -1413,7 +1493,7 @@
         const month = currentCalendarDate.getMonth();
 
         calendarMonth.textContent = new Date(year, month).toLocaleDateString(
-          "en-US",
+          "th-TH",
           {
             month: "long",
             year: "numeric",
@@ -1426,7 +1506,7 @@
 
         const calendarHTML = [];
 
-        const dayHeaders = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        const dayHeaders = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
         dayHeaders.forEach((day) => {
           calendarHTML.push(`
             <div class="calendar-day" style="font-weight: 600; background: linear-gradient(135deg, #1e88e5, #1565c0); color: white; cursor: default;">
@@ -1435,8 +1515,7 @@
           `);
         });
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = getBangkokDateOnly();
 
         for (let i = 0; i < 42; i++) {
           const currentDate = new Date(startDate);
@@ -1446,8 +1525,7 @@
           const isToday = currentDate.getTime() === today.getTime();
 
           const dayAssignments = assignments.filter((assignment) => {
-            const assignmentDate = new Date(assignment.dueDate);
-            assignmentDate.setHours(0, 0, 0, 0);
+            const assignmentDate = getBangkokDateOnly(assignment.dueDate);
             return (
               assignmentDate.getTime() === currentDate.getTime() &&
               !assignment.completed
@@ -1486,8 +1564,9 @@
 
       function updateUpcomingAssignments() {
         const upcomingList = document.getElementById("upcomingAssignmentsList");
+        const now = getBangkokTime();
         const upcoming = assignments
-          .filter((a) => !a.completed && new Date(a.dueDate) > new Date())
+          .filter((a) => !a.completed && new Date(a.dueDate) > now)
           .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
           .slice(0, 8);
 
@@ -1503,7 +1582,6 @@
         upcomingList.innerHTML = upcoming
           .map((assignment) => {
             const dueDate = new Date(assignment.dueDate);
-            const now = new Date();
             const diffTime = dueDate.getTime() - now.getTime();
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
@@ -1512,7 +1590,8 @@
             else if (diffDays === 1) dateText = "Tomorrow";
             else if (diffDays < 7) dateText = `${diffDays} days`;
             else
-              dateText = dueDate.toLocaleDateString("en-US", {
+              dateText = dueDate.toLocaleDateString("th-TH", {
+                timeZone: "Asia/Bangkok",
                 month: "short",
                 day: "numeric",
               });
@@ -1568,7 +1647,11 @@
 
         const dueDate = new Date(assignment.dueDate);
         if (!isNaN(dueDate.getTime())) {
-          const formattedDate = dueDate.toISOString().split("T")[0];
+          // Convert to Bangkok timezone for the date input
+          const bangkokDate = new Date(
+            dueDate.toLocaleString("en-US", { timeZone: "Asia/Bangkok" })
+          );
+          const formattedDate = bangkokDate.toISOString().split("T")[0];
           document.getElementById("assignmentDate").value = formattedDate;
         }
 
@@ -1627,7 +1710,8 @@
               return;
             }
 
-            let dueDate = new Date(date);
+            // Create date in Bangkok timezone
+            let dueDate = new Date(date + "T00:00:00");
 
             if (period === "end-of-day") {
               dueDate.setHours(17, 0, 0, 0);
