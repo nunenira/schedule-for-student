@@ -77,13 +77,13 @@ function updateDashboard(studentData) {
   ).textContent = `${studentData.gradeLevel}/${studentData.classroom}`;
   document.getElementById(
     "welcomeTitle"
-  ).textContent = `Welcome back, ${studentData.studentId}!`;
+  ).textContent = `ยินดีต้อนรับกลับมา ${studentData.studentId}!`;
   document.getElementById("studentIdValue").textContent = studentData.studentId;
   document.getElementById("gradeLevelValue").textContent =
     studentData.gradeLevel;
   document.getElementById(
     "classroomValue"
-  ).textContent = `Room ${studentData.classroom}`;
+  ).textContent = `ห้อง ${studentData.classroom}`;
   document.getElementById("emailValue").textContent = studentData.email;
 
   loadScheduleForClass(studentData.gradeLevel, studentData.classroom);

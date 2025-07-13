@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -169,6 +168,219 @@
         padding: 30px 20px;
       }
 
+      .announcements-section {
+        margin-bottom: 30px;
+      }
+
+      .announcements-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .announcements-title {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #1e3c72;
+      }
+
+      .announcements-title i {
+        color: #dc3545;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .view-all-btn {
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .view-all-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+        color: white;
+      }
+
+      .announcements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .announcement-card {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border-left: 5px solid #e0e0e0;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .announcement-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .announcement-card.priority-high {
+        border-left-color: #dc3545;
+        background: linear-gradient(135deg, #fff, #fff5f5);
+      }
+
+      .announcement-card.priority-medium {
+        border-left-color: #ffc107;
+        background: linear-gradient(135deg, #fff, #fffbf0);
+      }
+
+      .announcement-card.priority-low {
+        border-left-color: #28a745;
+        background: linear-gradient(135deg, #fff, #f8fff8);
+      }
+
+      .announcement-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+
+      .announcement-priority {
+        background: #f8f9fa;
+        color: #666;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .priority-high {
+        background: #fee;
+        color: #dc3545;
+      }
+
+      .priority-medium {
+        background: #fff8e1;
+        color: #f57c00;
+      }
+
+      .priority-low {
+        background: #e8f5e8;
+        color: #2e7d32;
+      }
+
+      .announcement-date {
+        font-size: 12px;
+        color: #999;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .announcement-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 10px;
+        line-height: 1.3;
+      }
+
+      .announcement-content {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+      }
+
+      .announcement-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .announcement-tag {
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 4px 10px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .announcement-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-top: 15px;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      .announcement-author {
+        font-size: 12px;
+        color: #666;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .read-more-btn {
+        background: transparent;
+        border: 1px solid #1e88e5;
+        color: #1e88e5;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .read-more-btn:hover {
+        background: #1e88e5;
+        color: white;
+      }
+
+      .no-announcements {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        color: #666;
+      }
+
+      .no-announcements i {
+        font-size: 48px;
+        margin-bottom: 15px;
+        opacity: 0.5;
+      }
+
       .current-time-card {
         background: linear-gradient(135deg, #1e88e5, #1565c0);
         color: white;
@@ -323,7 +535,7 @@
 
       .schedule-table th {
         background: linear-gradient(135deg, #1e88e5, #1565c0);
-        color: white;
+        color: rgb(0, 0, 0);
         font-weight: 600;
       }
 
@@ -509,49 +721,12 @@
         font-style: italic;
       }
 
-      .quick-actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 15px;
-      }
-
-      .action-btn {
-        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-        border: 2px solid #e0e0e0;
-        border-radius: 10px;
-        padding: 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        color: #333;
-      }
-
-      .action-btn:hover {
-        border-color: #1e88e5;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.2);
-        color: #333;
-      }
-
-      .action-icon {
-        font-size: 24px;
-        color: #1e88e5;
-        margin-bottom: 10px;
-      }
-
-      .action-text {
-        font-weight: 600;
-        margin-bottom: 5px;
-      }
-
-      .action-desc {
-        font-size: 12px;
-        color: #666;
-      }
-
       @media (max-width: 768px) {
         .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .announcements-grid {
           grid-template-columns: 1fr;
         }
 
@@ -569,6 +744,627 @@
 
         .card {
           padding: 20px;
+        }
+
+        .announcements-header {
+          flex-direction: column;
+          gap: 15px;
+          align-items: flex-start;
+        }
+
+        .admin-panel {
+          width: 95% !important;
+          margin: 5% auto !important;
+        }
+
+        .admin-form {
+          padding: 20px !important;
+        }
+      }
+
+      /* Admin Panel Styles */
+      .admin-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .admin-panel {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        border-radius: 20px;
+        width: 95%;
+        max-width: 800px;
+        max-height: 95vh;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translate(-50%, -60%) scale(0.9);
+        }
+        to {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(1);
+        }
+      }
+
+      .admin-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .admin-title {
+        font-size: 24px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .admin-close {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        transition: all 0.3s ease;
+      }
+
+      .admin-close:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: rotate(90deg);
+      }
+
+      .admin-content {
+        max-height: calc(95vh - 100px);
+        overflow-y: auto;
+      }
+
+      .admin-auth {
+        padding: 50px;
+        text-align: center;
+      }
+
+      .admin-auth h3 {
+        margin-bottom: 30px;
+        color: #1e3c72;
+        font-size: 28px;
+        font-weight: 600;
+      }
+
+      .auth-icon {
+        font-size: 64px;
+        color: #1e88e5;
+        margin-bottom: 30px;
+        display: block;
+      }
+
+      .admin-password-input {
+        width: 100%;
+        max-width: 300px;
+        padding: 15px 50px 15px 50px;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        font-size: 16px;
+        margin-bottom: 30px;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+        text-align: center;
+        position: relative;
+      }
+
+      .admin-password-input:focus {
+        outline: none;
+        border-color: #1e88e5;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+      }
+
+      .admin-btn {
+        width: 100%;
+        padding: 15px;
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 5px 15px rgba(30, 136, 229, 0.3);
+      }
+
+      .admin-btn:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(30, 136, 229, 0.4);
+      }
+
+      .admin-btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .admin-form {
+        padding: 40px;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      }
+
+      .admin-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        border-bottom: 2px solid #e0e0e0;
+        padding-bottom: 0;
+      }
+
+      .admin-tab {
+        background: none;
+        border: none;
+        padding: 15px 25px;
+        font-size: 16px;
+        font-weight: 500;
+        color: #666;
+        cursor: pointer;
+        border-radius: 10px 10px 0 0;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      .admin-tab.active {
+        color: #1e88e5;
+        background: white;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-tab.active::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #1e88e5;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .admin-form-group {
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      .admin-form-group input,
+      .admin-form-group select,
+      .admin-form-group textarea {
+        width: 100%;
+        padding: 15px 50px 15px 50px;
+        border: 2px solid #e0e0e0;
+        border-radius: 25px;
+        font-size: 16px;
+        background: #f8f9fa;
+        transition: all 0.3s ease;
+        outline: none;
+        appearance: none;
+      }
+
+      .admin-form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+        border-radius: 15px;
+      }
+
+      .admin-form-group select {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 20px center;
+        background-size: 16px;
+        cursor: pointer;
+      }
+
+      .admin-form-group input:focus,
+      .admin-form-group select:focus,
+      .admin-form-group textarea:focus {
+        border-color: #1e88e5;
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+      }
+
+      .admin-form-group input.error,
+      .admin-form-group select.error {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+      }
+
+      .admin-form-group input.success,
+      .admin-form-group select.success {
+        border-color: #28a745;
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+      }
+
+      .admin-form-group label {
+        position: absolute;
+        top: 15px;
+        left: 50px;
+        color: #999;
+        font-size: 16px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+      }
+
+      .admin-form-group input:focus + label,
+      .admin-form-group input:not(:placeholder-shown) + label,
+      .admin-form-group select:focus + label,
+      .admin-form-group select:not([value=""]) + label,
+      .admin-form-group textarea:focus + label,
+      .admin-form-group textarea:not(:placeholder-shown) + label {
+        top: -8px;
+        left: 45px;
+        font-size: 12px;
+        color: #1e88e5;
+        background: white;
+        padding: 0 5px;
+      }
+
+      .admin-input-icon {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #999;
+        font-size: 16px;
+      }
+
+      .admin-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .file-upload {
+        border: 2px dashed #1e88e5;
+        border-radius: 15px;
+        padding: 30px 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        background: white;
+        box-sizing: border-box;
+      }
+
+      .file-upload:hover {
+        border-color: #1565c0;
+        background: #e3f2fd;
+        transform: translateY(-2px);
+      }
+
+      .file-upload.dragover {
+        border-color: #1565c0;
+        background: #e3f2fd;
+        transform: scale(1.02);
+      }
+
+      .file-upload-icon {
+        font-size: 48px;
+        color: #1e88e5;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .file-upload-text {
+        color: #666;
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .file-preview {
+        margin-top: 15px;
+        text-align: center;
+      }
+
+      .file-preview img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .tag-input-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 15px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 15px;
+        min-height: 55px;
+        cursor: text;
+        transition: all 0.3s ease;
+        background: white;
+        box-sizing: border-box;
+        align-items: center;
+      }
+
+      .tag-input-container:focus-within {
+        border-color: #1e88e5;
+        box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+      }
+
+      .tag-item {
+        background: linear-gradient(135deg, #1e88e5, #1565c0);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        white-space: nowrap;
+        animation: tagSlideIn 0.3s ease;
+      }
+
+      @keyframes tagSlideIn {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .tag-remove {
+        background: none;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+      }
+
+      .tag-remove:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .tag-input {
+        border: none;
+        outline: none;
+        flex: 1;
+        min-width: 120px;
+        padding: 8px 0;
+        font-family: inherit;
+        font-size: 14px;
+        color: #333;
+        background: transparent;
+      }
+
+      .tag-input::placeholder {
+        color: #999;
+        opacity: 1;
+      }
+
+      .success-message {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 4px solid #28a745;
+        animation: slideInFromTop 0.3s ease;
+      }
+
+      .error-message {
+        background: linear-gradient(135deg, #f8d7da, #f1aeb5);
+        color: #721c24;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-left: 4px solid #dc3545;
+        animation: slideInFromTop 0.3s ease;
+      }
+
+      @keyframes slideInFromTop {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #1e88e5;
+        transition: all 0.3s ease;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+      }
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #1e88e5;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .recent-announcements {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
+      .recent-item {
+        padding: 15px;
+        border-bottom: 1px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+      }
+
+      .recent-item:hover {
+        background: #f8f9fa;
+        transform: translateX(5px);
+      }
+
+      .recent-item:last-child {
+        border-bottom: none;
+      }
+
+      .recent-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+      }
+
+      .recent-meta {
+        font-size: 12px;
+        color: #666;
+      }
+
+      .recent-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-small {
+        padding: 6px 12px;
+        font-size: 12px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .btn-edit {
+        background: #17a2b8;
+        color: white;
+      }
+
+      .btn-delete {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-small:hover {
+        transform: translateY(-1px);
+        opacity: 0.9;
+      }
+
+      @media (max-width: 768px) {
+        .admin-panel {
+          width: 98%;
+          margin: 1% auto;
+        }
+
+        .admin-form {
+          padding: 25px;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .admin-tabs {
+          flex-direction: column;
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .user-details {
+          display: none;
+        }
+
+        .dashboard-header-right {
+          flex-wrap: wrap;
+          gap: 10px;
         }
       }
     </style>
@@ -589,6 +1385,10 @@
         <a href="planner.html" class="nav-btn">
           <i class="bi bi-calendar-plus"></i>
           <span>Planner</span>
+        </a>
+        <a href="announce.html" class="nav-btn">
+          <i class="bi bi-megaphone-fill"></i>
+          <span>Announcement</span>
         </a>
         <div class="user-info">
           <div class="user-avatar">
@@ -612,34 +1412,45 @@
         <div class="current-date" id="currentDate">Loading...</div>
       </div>
 
-      <div class="demo-message">
-        <i class="bi bi-info-circle"></i>
-        <strong>Real Schedule:</strong> This shows the actual timetable for
-        ม.6/5 from Benchamarachuthit School, including teacher names and room
-        numbers.
+      <!-- Announcements Section -->
+      <div class="announcements-section">
+        <div class="announcements-header">
+          <h2 class="announcements-title">
+            <i class="bi bi-megaphone-fill"></i>
+            ประกาศข่าวสาร
+          </h2>
+          <a href="announce.html" class="view-all-btn">
+            <span>ดูทั้งหมด</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+        <div id="announcementsContent" class="announcements-grid">
+          <div class="loading-content">
+            <i class="bi bi-arrow-clockwise"></i>
+            กำลังโหลดประกาศ...
+          </div>
+        </div>
       </div>
 
       <div class="welcome-section">
-        <h1 class="welcome-title" id="welcomeTitle">Welcome back!</h1>
-        <p class="welcome-subtitle">
-          Here's your student information and dashboard.
-        </p>
+        <h1 class="welcome-title" id="welcomeTitle">ยินดีต้อนรับกลับมา</h1>
+        <p class="welcome-subtitle">นี่คือข้อมูลนักเรียนและแดชบอร์ดของคุณ</p>
 
         <div class="student-info-grid">
           <div class="info-card">
-            <div class="info-label">Student ID</div>
+            <div class="info-label">รหัสประจำตัวนักเรียน</div>
             <div class="info-value" id="studentIdValue">Loading...</div>
           </div>
           <div class="info-card">
-            <div class="info-label">Grade Level</div>
+            <div class="info-label">ระดับชั้น</div>
             <div class="info-value" id="gradeLevelValue">Loading...</div>
           </div>
           <div class="info-card">
-            <div class="info-label">Classroom</div>
+            <div class="info-label">ห้อง</div>
             <div class="info-value" id="classroomValue">Loading...</div>
           </div>
           <div class="info-card">
-            <div class="info-label">Email</div>
+            <div class="info-label">อีเมล</div>
             <div class="info-value" id="emailValue">Loading...</div>
           </div>
         </div>
@@ -706,36 +1517,257 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="card">
-        <div class="card-header">
-          <div class="card-icon">
-            <i class="bi bi-lightning-charge"></i>
-          </div>
-          <h2 class="card-title">Quick Actions</h2>
+    <!-- Improved Admin Panel -->
+    <div class="admin-overlay" id="adminOverlay">
+      <div class="admin-panel">
+        <div class="admin-header">
+          <h2 class="admin-title">
+            <i class="bi bi-shield-lock"></i>
+            Admin Panel
+          </h2>
+          <button class="admin-close" onclick="closeAdminPanel()">×</button>
         </div>
-        <div class="quick-actions">
-          <a href="planner.html" class="action-btn">
-            <div class="action-icon">
-              <i class="bi bi-calendar-plus"></i>
+        <div class="admin-content">
+          <!-- Authentication Screen -->
+          <div class="admin-auth" id="adminAuth">
+            <i class="bi bi-shield-lock auth-icon"></i>
+            <h3>ต้องการสิทธิ์ผู้ดูแลระบบ</h3>
+            <p style="color: #666; margin-bottom: 30px">
+              กรุณาป้อนรหัสผ่านผู้ดูแลระบบเพื่อดำเนินการต่อ
+            </p>
+            <div style="position: relative; display: inline-block">
+              <i
+                class="bi bi-key"
+                style="
+                  position: absolute;
+                  left: 18px;
+                  top: 50%;
+                  transform: translateY(-50%);
+                  color: #999;
+                  font-size: 16px;
+                "
+              ></i>
+              <input
+                type="password"
+                class="admin-password-input"
+                id="adminPassword"
+                placeholder="รหัสผ่านผู้ดูแลระบบ..."
+                onkeypress="handlePasswordKeypress(event)"
+              />
             </div>
-            <div class="action-text">Assignment Planner</div>
-            <div class="action-desc">Manage assignments and exams</div>
-          </a>
-          <div class="action-btn" onclick="showFeature('Grades')">
-            <div class="action-icon"><i class="bi bi-award"></i></div>
-            <div class="action-text">Check Grades</div>
-            <div class="action-desc">View academic progress</div>
+            <br />
+            <button class="admin-btn" onclick="authenticateAdmin()">
+              <i class="bi bi-key"></i>
+              ยืนยันตัวตน
+            </button>
           </div>
-          <div class="action-btn" onclick="showFeature('Announcements')">
-            <div class="action-icon"><i class="bi bi-megaphone"></i></div>
-            <div class="action-text">Announcements</div>
-            <div class="action-desc">Latest school news</div>
-          </div>
-          <div class="action-btn" onclick="showFeature('Profile')">
-            <div class="action-icon"><i class="bi bi-person-gear"></i></div>
-            <div class="action-text">Edit Profile</div>
-            <div class="action-desc">Update your information</div>
+
+          <!-- Admin Dashboard -->
+          <div class="admin-form" id="adminForm" style="display: none">
+            <div id="adminMessage"></div>
+
+            <!-- Admin Tabs -->
+            <div class="admin-tabs">
+              <button
+                class="admin-tab active"
+                onclick="showAdminTab('dashboard')"
+              >
+                <i class="bi bi-speedometer2"></i> แดชบอร์ด
+              </button>
+              <button class="admin-tab" onclick="showAdminTab('create')">
+                <i class="bi bi-plus-circle"></i> สร้างประกาศ
+              </button>
+              <button class="admin-tab" onclick="showAdminTab('manage')">
+                <i class="bi bi-list-ul"></i> จัดการประกาศ
+              </button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboardTab" class="tab-content active">
+              <h3 style="margin-bottom: 20px; color: #1e3c72">
+                <i class="bi bi-graph-up"></i> ภาพรวมสถิติ
+              </h3>
+
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <div class="stat-number" id="totalAnnouncements">0</div>
+                  <div class="stat-label">ประกาศทั้งหมด</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-number" id="highPriorityCount">0</div>
+                  <div class="stat-label">ประกาศสำคัญมาก</div>
+                </div>
+                <div class="stat-card">
+                  <div class="stat-number" id="todayCount">0</div>
+                  <div class="stat-label">ประกาศวันนี้</div>
+                </div>
+              </div>
+
+              <div class="recent-announcements">
+                <h4 style="margin-bottom: 20px; color: #1e3c72">
+                  <i class="bi bi-clock-history"></i> ประกาศล่าสุด
+                </h4>
+                <div id="recentAnnouncementsList">
+                  <!-- Recent announcements will be loaded here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Create Announcement Tab -->
+            <div id="createTab" class="tab-content">
+              <h3 style="margin-bottom: 20px; color: #1e3c72">
+                <i class="bi bi-plus-circle"></i> สร้างประกาศใหม่
+              </h3>
+
+              <form id="announcementForm" onsubmit="submitAnnouncement(event)">
+                <div class="admin-form-group">
+                  <i class="bi bi-file-text admin-input-icon"></i>
+                  <input
+                    type="text"
+                    id="announcementTitle"
+                    placeholder=" "
+                    required
+                  />
+                  <label>หัวข้อประกาศ *</label>
+                </div>
+
+                <div class="admin-form-group">
+                  <i class="bi bi-text-paragraph admin-input-icon"></i>
+                  <textarea
+                    id="announcementContent"
+                    placeholder=" "
+                    rows="6"
+                    required
+                  ></textarea>
+                  <label>เนื้อหาประกาศ *</label>
+                </div>
+
+                <div class="admin-form-row">
+                  <div class="admin-form-group">
+                    <i class="bi bi-flag admin-input-icon"></i>
+                    <select id="announcementPriority" required>
+                      <option value="" disabled selected hidden></option>
+                      <option value="low">ทั่วไป</option>
+                      <option value="medium">สำคัญ</option>
+                      <option value="high">สำคัญมาก</option>
+                    </select>
+                    <label>ระดับความสำคัญ</label>
+                  </div>
+
+                  <div class="admin-form-group">
+                    <i class="bi bi-person admin-input-icon"></i>
+                    <input
+                      type="text"
+                      id="announcementAuthor"
+                      placeholder=" "
+                      value="ผู้ดูแลระบบ"
+                    />
+                    <label>ผู้เขียน</label>
+                  </div>
+                </div>
+
+                <div class="admin-form-group">
+                  <label
+                    style="
+                      display: block;
+                      font-weight: 600;
+                      color: #1e3c72;
+                      margin-bottom: 8px;
+                      font-size: 14px;
+                      position: static;
+                    "
+                    >แท็ก</label
+                  >
+                  <div class="tag-input-container" onclick="focusTagInput()">
+                    <div id="tagsList"></div>
+                    <input
+                      type="text"
+                      class="tag-input"
+                      id="tagInput"
+                      placeholder="เพิ่มแท็กและกด Enter..."
+                      onkeypress="handleTagInput(event)"
+                    />
+                  </div>
+                  <small
+                    style="
+                      color: #666;
+                      font-size: 12px;
+                      margin-top: 5px;
+                      display: block;
+                    "
+                  >
+                    เพิ่มแท็กและกด Enter หรือ คอมม่า เพื่อแยกแท็ก
+                  </small>
+                </div>
+
+                <div class="admin-form-group">
+                  <i class="bi bi-link admin-input-icon"></i>
+                  <input type="url" id="announcementLink" placeholder=" " />
+                  <label>ลิงก์เพิ่มเติม (ไม่บังคับ)</label>
+                </div>
+
+                <div class="admin-form-group">
+                  <label
+                    style="
+                      display: block;
+                      font-weight: 600;
+                      color: #1e3c72;
+                      margin-bottom: 8px;
+                      font-size: 14px;
+                      position: static;
+                    "
+                    >รูปภาพ (ไม่บังคับ)</label
+                  >
+                  <div class="file-upload" id="fileUpload">
+                    <input
+                      type="file"
+                      id="imageInput"
+                      accept="image/*"
+                      style="display: none"
+                      onchange="handleImageUpload(event)"
+                    />
+                    <div class="file-upload-icon">
+                      <i class="bi bi-cloud-upload"></i>
+                    </div>
+                    <div class="file-upload-text">
+                      คลิกเพื่ออัพโหลดหรือลากวางรูปภาพ
+                    </div>
+                  </div>
+                  <div class="file-preview" id="imagePreview"></div>
+                </div>
+
+                <button type="submit" class="admin-btn" id="submitBtn">
+                  <i class="bi bi-plus-circle"></i>
+                  สร้างประกาศ
+                </button>
+              </form>
+            </div>
+
+            <!-- Manage Announcements Tab -->
+            <div id="manageTab" class="tab-content">
+              <h3 style="margin-bottom: 20px; color: #1e3c72">
+                <i class="bi bi-list-ul"></i> จัดการประกาศ
+              </h3>
+
+              <div style="margin-bottom: 20px">
+                <div class="admin-form-group" style="max-width: 300px">
+                  <i class="bi bi-search admin-input-icon"></i>
+                  <input
+                    type="text"
+                    id="searchAnnouncements"
+                    placeholder=" "
+                    onkeyup="filterAnnouncements()"
+                  />
+                  <label>ค้นหาประกาศ...</label>
+                </div>
+              </div>
+
+              <div id="manageAnnouncementsList">
+                <!-- Announcements management list will be loaded here -->
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -750,13 +1782,25 @@
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
       import {
         getFirestore,
+        collection,
+        addDoc,
+        updateDoc,
+        deleteDoc,
         doc,
         getDoc,
-        collection,
         query,
-        where,
+        orderBy,
+        limit,
         onSnapshot,
+        serverTimestamp,
+        where,
       } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+      import {
+        getStorage,
+        ref,
+        uploadBytes,
+        getDownloadURL,
+      } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
       const firebaseConfig = {
         apiKey: "AIzaSyBfrhiskCagKW3X-IybZYZh0_K4F1j7724",
@@ -770,12 +1814,21 @@
       const app = initializeApp(firebaseConfig);
       const auth = getAuth(app);
       const db = getFirestore(app);
+      const storage = getStorage(app);
 
       let currentUser = null;
       let currentStudentData = null;
       let currentSchedule = null;
       let assignments = [];
       let assignmentListener = null;
+      let announcementListener = null;
+      let allAnnouncements = [];
+      let selectedTags = [];
+      let selectedImage = null;
+      let editingAnnouncementId = null;
+
+      // Admin configuration
+      const ADMIN_PASSWORD = "admin123"; // Change this to a secure password
 
       // ข้อมูลตารางเรียนจาก script.js เดิม
       const scheduleData = {
@@ -919,6 +1972,7 @@
               currentStudentData.classroom
             );
             await loadUserAssignments(user.uid);
+            await loadAnnouncements();
           } else {
             console.log("Student data not found");
             window.location.href = "index.html";
@@ -945,6 +1999,167 @@
           studentData.classroom || "N/A";
         document.getElementById("emailValue").textContent =
           currentUser.email || "N/A";
+      }
+
+      async function loadAnnouncements() {
+        try {
+          if (announcementListener) {
+            announcementListener();
+          }
+
+          const announcementsQuery = query(
+            collection(db, "announcements"),
+            orderBy("createdAt", "desc")
+          );
+
+          announcementListener = onSnapshot(
+            announcementsQuery,
+            (snapshot) => {
+              allAnnouncements = [];
+              snapshot.forEach((doc) => {
+                const data = doc.data();
+                let createdAt;
+
+                if (data.createdAt) {
+                  if (data.createdAt.toDate) {
+                    createdAt = data.createdAt.toDate();
+                  } else if (data.createdAt.seconds) {
+                    createdAt = new Date(data.createdAt.seconds * 1000);
+                  } else {
+                    createdAt = new Date(data.createdAt);
+                  }
+                } else {
+                  createdAt = new Date();
+                }
+
+                allAnnouncements.push({
+                  id: doc.id,
+                  ...data,
+                  createdAt: createdAt,
+                });
+              });
+
+              renderAnnouncements();
+              updateAdminStats();
+              renderRecentAnnouncements();
+              renderManageAnnouncements();
+            },
+            (error) => {
+              console.error("Error listening to announcements:", error);
+              renderAnnouncementsError();
+            }
+          );
+        } catch (error) {
+          console.error("Error setting up announcement listener:", error);
+          renderAnnouncementsError();
+        }
+      }
+
+      function renderAnnouncements() {
+        const container = document.getElementById("announcementsContent");
+        const recentAnnouncements = allAnnouncements.slice(0, 3);
+
+        if (recentAnnouncements.length === 0) {
+          container.innerHTML = `
+            <div class="no-announcements">
+              <i class="bi bi-megaphone"></i>
+              <h3>ไม่มีประกาศในขณะนี้</h3>
+              <p>เมื่อมีประกาศใหม่จะแสดงที่นี่</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = recentAnnouncements
+          .map((announcement) => {
+            const priorityClass = announcement.priority || "low";
+            const priorityText =
+              {
+                high: "สำคัญมาก",
+                medium: "สำคัญ",
+                low: "ทั่วไป",
+              }[priorityClass] || "ทั่วไป";
+
+            const tags = announcement.tags || [];
+            const author = announcement.author || "ผู้ดูแลระบบ";
+
+            const formatDate = (date) => {
+              return date.toLocaleDateString("th-TH", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            };
+
+            return `
+              <div class="announcement-card priority-${priorityClass}">
+                <div class="announcement-header">
+                  <span class="announcement-priority priority-${priorityClass}">
+                    ${priorityText}
+                  </span>
+                  <div class="announcement-date">
+                    <i class="bi bi-clock"></i>
+                    ${formatDate(announcement.createdAt)}
+                  </div>
+                </div>
+                
+                <h3 class="announcement-title">${
+                  announcement.title || "ไม่มีหัวข้อ"
+                }</h3>
+                
+                <div class="announcement-content">
+                  ${(announcement.content || "ไม่มีเนื้อหา").substring(
+                    0,
+                    120
+                  )}${
+              announcement.content && announcement.content.length > 120
+                ? "..."
+                : ""
+            }
+                </div>
+                
+                ${
+                  tags.length > 0
+                    ? `
+                  <div class="announcement-tags">
+                    ${tags
+                      .map(
+                        (tag) => `<span class="announcement-tag">${tag}</span>`
+                      )
+                      .join("")}
+                  </div>
+                `
+                    : ""
+                }
+                
+                <div class="announcement-footer">
+                  <div class="announcement-author">
+                    <i class="bi bi-person-circle"></i>
+                    ${author}
+                  </div>
+                  <button class="read-more-btn" onclick="readMore('${
+                    announcement.id
+                  }')">
+                    อ่านเพิ่มเติม
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function renderAnnouncementsError() {
+        const container = document.getElementById("announcementsContent");
+        container.innerHTML = `
+          <div class="no-announcements">
+            <i class="bi bi-exclamation-triangle"></i>
+            <h3>ไม่สามารถโหลดประกาศได้</h3>
+            <p>กรุณาลองใหม่อีกครั้ง</p>
+          </div>
+        `;
       }
 
       async function loadUserAssignments(userId) {
@@ -1065,7 +2280,7 @@
           .join("");
       }
 
-      // ฟังก์ชันจาก script.js เดิม
+      // Schedule functions
       function loadScheduleForClass(gradeLevel, classroom) {
         if (scheduleData[gradeLevel] && scheduleData[gradeLevel][classroom]) {
           currentSchedule = scheduleData[gradeLevel][classroom];
@@ -1336,6 +2551,9 @@
           if (assignmentListener) {
             assignmentListener();
           }
+          if (announcementListener) {
+            announcementListener();
+          }
           await signOut(auth);
           window.location.href = "index.html";
         } catch (error) {
@@ -1345,8 +2563,8 @@
         }
       }
 
-      function showFeature(feature) {
-        alert(`${feature} feature coming soon!`);
+      function readMore(announcementId) {
+        window.location.href = `announce.html?id=${announcementId}`;
       }
 
       // Auto-refresh every minute
@@ -1357,8 +2575,467 @@
         }
       }, 60000);
 
+      // Admin Panel Functions
+      function openAdminPanel() {
+        document.getElementById("adminOverlay").style.display = "block";
+        document.getElementById("adminPassword").focus();
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeAdminPanel() {
+        document.getElementById("adminOverlay").style.display = "none";
+        document.getElementById("adminAuth").style.display = "block";
+        document.getElementById("adminForm").style.display = "none";
+        document.getElementById("adminPassword").value = "";
+        resetForm();
+        document.body.style.overflow = "auto";
+      }
+
+      function handlePasswordKeypress(event) {
+        if (event.key === "Enter") {
+          authenticateAdmin();
+        }
+      }
+
+      function authenticateAdmin() {
+        const password = document.getElementById("adminPassword").value;
+        if (password === ADMIN_PASSWORD) {
+          document.getElementById("adminAuth").style.display = "none";
+          document.getElementById("adminForm").style.display = "block";
+          showAdminTab("dashboard");
+        } else {
+          showAdminMessage("รหัสผ่านไม่ถูกต้อง! กรุณาลองใหม่อีกครั้ง", "error");
+          document.getElementById("adminPassword").value = "";
+          document.getElementById("adminPassword").focus();
+        }
+      }
+
+      function showAdminTab(tabName) {
+        // Hide all tabs
+        document.querySelectorAll(".admin-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Show selected tab
+        document
+          .querySelector(`[onclick="showAdminTab('${tabName}')"]`)
+          .classList.add("active");
+        document.getElementById(`${tabName}Tab`).classList.add("active");
+
+        // Load tab-specific content
+        if (tabName === "dashboard") {
+          updateAdminStats();
+          renderRecentAnnouncements();
+        } else if (tabName === "manage") {
+          renderManageAnnouncements();
+        }
+      }
+
+      function updateAdminStats() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        const todayAnnouncements = allAnnouncements.filter((a) => {
+          const announcementDate = new Date(a.createdAt);
+          announcementDate.setHours(0, 0, 0, 0);
+          return announcementDate.getTime() === today.getTime();
+        });
+
+        const highPriorityAnnouncements = allAnnouncements.filter(
+          (a) => a.priority === "high"
+        );
+
+        document.getElementById("totalAnnouncements").textContent =
+          allAnnouncements.length;
+        document.getElementById("highPriorityCount").textContent =
+          highPriorityAnnouncements.length;
+        document.getElementById("todayCount").textContent =
+          todayAnnouncements.length;
+        document.getElementById("activeUsers").textContent = "N/A"; // This would require user tracking
+      }
+
+      function renderRecentAnnouncements() {
+        const container = document.getElementById("recentAnnouncementsList");
+        const recent = allAnnouncements.slice(0, 5);
+
+        if (recent.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: #666;">
+              <i class="bi bi-megaphone" style="font-size: 24px; margin-bottom: 10px; display: block;"></i>
+              No announcements yet
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = recent
+          .map((announcement) => {
+            const formatDate = (date) => {
+              return date.toLocaleDateString("th-TH", {
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            };
+
+            return `
+            <div class="recent-item">
+              <div>
+                <div class="recent-title">${announcement.title}</div>
+                <div class="recent-meta">
+                  ${announcement.priority.toUpperCase()} • ${formatDate(
+              announcement.createdAt
+            )} • ${announcement.author}
+                </div>
+              </div>
+              <div class="recent-actions">
+                <button class="btn-small btn-edit" onclick="editAnnouncementFromManage('${
+                  announcement.id
+                }')">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button class="btn-small btn-delete" onclick="deleteAnnouncementConfirm('${
+                  announcement.id
+                }')">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function renderManageAnnouncements() {
+        const container = document.getElementById("manageAnnouncementsList");
+
+        if (allAnnouncements.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #666;">
+              <i class="bi bi-megaphone" style="font-size: 48px; margin-bottom: 15px; display: block;"></i>
+              <h3>No announcements to manage</h3>
+              <p>Create your first announcement using the "Create Announcement" tab.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = allAnnouncements
+          .map((announcement) => {
+            const formatDate = (date) => {
+              return date.toLocaleDateString("th-TH", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+              });
+            };
+
+            const priorityColors = {
+              high: "#dc3545",
+              medium: "#ffc107",
+              low: "#28a745",
+            };
+
+            return `
+            <div class="recent-item" style="border-left: 4px solid ${
+              priorityColors[announcement.priority]
+            };">
+              <div style="flex: 1;">
+                <div class="recent-title">${announcement.title}</div>
+                <div class="recent-meta">
+                  Priority: ${announcement.priority.toUpperCase()} • 
+                  Created: ${formatDate(announcement.createdAt)} • 
+                  Author: ${announcement.author}
+                </div>
+                <div style="margin-top: 8px; color: #666; font-size: 14px;">
+                  ${(announcement.content || "").substring(0, 100)}${
+              announcement.content && announcement.content.length > 100
+                ? "..."
+                : ""
+            }
+                </div>
+                ${
+                  announcement.tags && announcement.tags.length > 0
+                    ? `
+                  <div style="margin-top: 8px;">
+                    ${announcement.tags
+                      .map(
+                        (tag) => `
+                      <span style="background: #e3f2fd; color: #1565c0; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-right: 5px;">
+                        ${tag}
+                      </span>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                `
+                    : ""
+                }
+              </div>
+              <div class="recent-actions">
+                <button class="btn-small btn-edit" onclick="editAnnouncementFromManage('${
+                  announcement.id
+                }')">
+                  <i class="bi bi-pencil"></i> Edit
+                </button>
+                <button class="btn-small btn-delete" onclick="deleteAnnouncementConfirm('${
+                  announcement.id
+                }')">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </div>
+            </div>
+          `;
+          })
+          .join("");
+      }
+
+      function filterAnnouncements() {
+        const searchTerm = document
+          .getElementById("searchAnnouncements")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(
+          "#manageAnnouncementsList .recent-item"
+        );
+
+        items.forEach((item) => {
+          const title = item
+            .querySelector(".recent-title")
+            .textContent.toLowerCase();
+          const content = item.textContent.toLowerCase();
+
+          if (title.includes(searchTerm) || content.includes(searchTerm)) {
+            item.style.display = "flex";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      }
+
+      function editAnnouncementFromManage(id) {
+        const announcement = allAnnouncements.find((a) => a.id === id);
+        if (!announcement) return;
+
+        // Switch to create tab and populate form
+        showAdminTab("create");
+
+        // Populate form fields
+        document.getElementById("announcementTitle").value =
+          announcement.title || "";
+        document.getElementById("announcementContent").value =
+          announcement.content || "";
+        document.getElementById("announcementPriority").value =
+          announcement.priority || "low";
+        document.getElementById("announcementAuthor").value =
+          announcement.author || "";
+        document.getElementById("announcementLink").value =
+          announcement.link || "";
+
+        // Set tags
+        selectedTags = announcement.tags || [];
+        renderTags();
+
+        // Update form for editing
+        editingAnnouncementId = id;
+        document.getElementById("submitBtn").innerHTML = `
+          <i class="bi bi-check-circle"></i>
+          Update Announcement
+        `;
+
+        showAdminMessage(
+          "Editing announcement. Make your changes and click Update.",
+          "success"
+        );
+      }
+
+      async function deleteAnnouncementConfirm(id) {
+        const announcement = allAnnouncements.find((a) => a.id === id);
+        if (!announcement) return;
+
+        if (
+          confirm(
+            `Are you sure you want to delete "${announcement.title}"?\n\nThis action cannot be undone.`
+          )
+        ) {
+          await deleteAnnouncementFromDb(id);
+        }
+      }
+
+      async function deleteAnnouncementFromDb(id) {
+        try {
+          showLoading(true);
+          await deleteDoc(doc(db, "announcements", id));
+          showAdminMessage("Announcement deleted successfully!", "success");
+        } catch (error) {
+          console.error("Error deleting announcement:", error);
+          showAdminMessage(
+            "Error deleting announcement: " + error.message,
+            "error"
+          );
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      function showAdminMessage(message, type = "success") {
+        const messageDiv = document.getElementById("adminMessage");
+        messageDiv.innerHTML = `
+          <div class="${type}-message">
+            <i class="bi bi-${
+              type === "success" ? "check-circle" : "exclamation-circle"
+            }"></i>
+            ${message}
+          </div>
+        `;
+        setTimeout(() => {
+          messageDiv.innerHTML = "";
+        }, 5000);
+      }
+
+      function resetForm() {
+        document.getElementById("announcementForm").reset();
+        document.getElementById("announcementAuthor").value = "ผู้ดูแลระบบ";
+        selectedTags = [];
+        editingAnnouncementId = null;
+        document.getElementById("tagsList").innerHTML = "";
+        document.getElementById("adminMessage").innerHTML = "";
+        document.getElementById("submitBtn").innerHTML = `
+          <i class="bi bi-plus-circle"></i>
+          Create Announcement
+        `;
+      }
+
+      // Tag handling
+      function focusTagInput() {
+        document.getElementById("tagInput").focus();
+      }
+
+      function handleTagInput(event) {
+        if (event.key === "Enter" || event.key === ",") {
+          event.preventDefault();
+          const input = event.target;
+          const tag = input.value.trim();
+          if (tag && !selectedTags.includes(tag)) {
+            selectedTags.push(tag);
+            input.value = "";
+            renderTags();
+          }
+        }
+      }
+
+      function removeTag(index) {
+        selectedTags.splice(index, 1);
+        renderTags();
+      }
+
+      function renderTags() {
+        const tagsList = document.getElementById("tagsList");
+        tagsList.innerHTML = selectedTags
+          .map(
+            (tag, index) => `
+            <div class="tag-item">
+              ${tag}
+              <button type="button" class="tag-remove" onclick="removeTag(${index})">
+                ×
+              </button>
+            </div>
+          `
+          )
+          .join("");
+      }
+
+      // Form submission
+      async function submitAnnouncement(event) {
+        event.preventDefault();
+
+        const submitBtn = document.getElementById("submitBtn");
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+          <i class="bi bi-arrow-clockwise" style="animation: spin 1s linear infinite;"></i>
+          ${editingAnnouncementId ? "Updating..." : "Creating..."}
+        `;
+
+        try {
+          const title = document.getElementById("announcementTitle").value;
+          const content = document.getElementById("announcementContent").value;
+          const priority = document.getElementById(
+            "announcementPriority"
+          ).value;
+          const author = document.getElementById("announcementAuthor").value;
+          const link = document.getElementById("announcementLink").value;
+
+          const announcementData = {
+            title: title.trim(),
+            content: content.trim(),
+            priority,
+            author: author.trim(),
+            tags: selectedTags,
+            link: link.trim() || null,
+          };
+
+          if (editingAnnouncementId) {
+            // Update existing announcement
+            await updateDoc(doc(db, "announcements", editingAnnouncementId), {
+              ...announcementData,
+              updatedAt: serverTimestamp(),
+            });
+            showAdminMessage("Announcement updated successfully!", "success");
+          } else {
+            // Create new announcement
+            await addDoc(collection(db, "announcements"), {
+              ...announcementData,
+              createdAt: serverTimestamp(),
+            });
+            showAdminMessage("Announcement created successfully!", "success");
+          }
+
+          resetForm();
+        } catch (error) {
+          console.error("Error saving announcement:", error);
+          showAdminMessage(
+            "Error saving announcement: " + error.message,
+            "error"
+          );
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+        }
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (event) => {
+        if (event.ctrlKey && event.key === "i") {
+          event.preventDefault();
+          openAdminPanel();
+        }
+        if (event.key === "Escape") {
+          closeAdminPanel();
+        }
+      });
+
+      // Make functions available globally
       window.logout = logout;
-      window.showFeature = showFeature;
+      window.readMore = readMore;
+      window.openAdminPanel = openAdminPanel;
+      window.closeAdminPanel = closeAdminPanel;
+      window.authenticateAdmin = authenticateAdmin;
+      window.handlePasswordKeypress = handlePasswordKeypress;
+      window.showAdminTab = showAdminTab;
+      window.focusTagInput = focusTagInput;
+      window.handleTagInput = handleTagInput;
+      window.removeTag = removeTag;
+      window.submitAnnouncement = submitAnnouncement;
+      window.editAnnouncementFromManage = editAnnouncementFromManage;
+      window.deleteAnnouncementConfirm = deleteAnnouncementConfirm;
+      window.filterAnnouncements = filterAnnouncements;
+      window.handleImageUpload = handleImageUpload;
     </script>
 
     <script type="module" src="firebase-config.js"></script>
