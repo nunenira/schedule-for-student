@@ -359,6 +359,11 @@
         color: white;
       }
 
+      .btn-notify {
+        background: #ff6b35;
+        color: white;
+      }
+
       .btn-small:hover {
         transform: translateY(-1px);
         opacity: 0.9;
@@ -715,6 +720,14 @@
         color: #666;
       }
 
+      .notification-settings {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+      }
+
       /* Responsive styles */
       @media (max-width: 768px) {
         .header {
@@ -849,6 +862,50 @@
 
       <div class="alert alert-success" id="successAlert"></div>
       <div class="alert alert-error" id="errorAlert"></div>
+
+      <!-- Email Notification Settings -->
+      <div class="notification-settings">
+        <div class="card-header">
+          <div class="card-icon">
+            <i class="bi bi-envelope"></i>
+          </div>
+          <h2 class="card-title">การแจ้งเตือนทางอีเมล</h2>
+        </div>
+        <div
+          style="
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+          "
+        >
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 8px;
+            "
+          >
+            <i
+              class="bi bi-check-circle-fill"
+              style="color: #28a745; font-size: 18px"
+            ></i>
+            <div style="font-weight: 600; color: #155724">
+              การแจ้งเตือนอัตโนมัติเปิดใช้งานแล้ว
+            </div>
+          </div>
+          <div style="font-size: 14px; color: #155724">
+            ระบบจะส่งการแจ้งเตือนทางอีเมลอัตโนมัติเมื่องานใกล้ครบกำหนด 1 วัน
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom: 0">
+          <i class="bi bi-envelope input-icon"></i>
+          <input type="email" id="notificationEmail" placeholder=" " />
+          <label>อีเมลสำหรับรับการแจ้งเตือน</label>
+        </div>
+      </div>
 
       <div class="tabs">
         <div class="tab-buttons">
@@ -1027,6 +1084,44 @@
       </div>
     </div>
 
+    <!-- Email Notification Modal -->
+    <div class="modal" id="emailModal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">ส่งการแจ้งเตือนทางอีเมล</h3>
+          <button class="close-btn" onclick="closeEmailModal()">&times;</button>
+        </div>
+        <form id="emailForm">
+          <div class="form-group">
+            <i class="bi bi-envelope input-icon"></i>
+            <input type="email" id="recipientEmail" placeholder=" " required />
+            <label>อีเมลผู้รับ</label>
+          </div>
+
+          <div class="form-group">
+            <i class="bi bi-type input-icon"></i>
+            <input type="text" id="emailSubject" placeholder=" " required />
+            <label>หัวข้อ</label>
+          </div>
+
+          <div class="form-group">
+            <i class="bi bi-text-paragraph input-icon"></i>
+            <textarea
+              id="emailMessage"
+              placeholder=" "
+              rows="5"
+              required
+            ></textarea>
+            <label>ข้อความ</label>
+          </div>
+
+          <button type="submit" class="submit-btn">ส่งอีเมล</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- EmailJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
       import {
@@ -1040,6 +1135,7 @@
         getDoc,
         collection,
         addDoc,
+        setDoc,
         updateDoc,
         deleteDoc,
         query,
@@ -1061,12 +1157,27 @@
       const auth = getAuth(app);
       const db = getFirestore(app);
 
+      // EmailJS Configuration - Replace with your actual IDs
+      const EMAILJS_CONFIG = {
+        serviceId: "service_gdf0asd", // Replace with your service ID
+        templateId: "template_eo9viex", // Replace with your template ID
+        publicKey: "BlyC7YtBGu3TjJU-P", // Replace with your public key
+      };
+
+      // Initialize EmailJS
+      emailjs.init(EMAILJS_CONFIG.publicKey);
+
       let currentUser = null;
       let currentStudentData = null;
       let assignments = [];
       let assignmentListener = null;
       let currentCalendarDate = getBangkokTime();
       let editingAssignmentId = null;
+      let notificationSettings = {
+        enabled: true, // Always enabled by default
+        email: "",
+        lastCheck: null,
+      };
 
       // Bangkok timezone utilities
       function getBangkokTime() {
@@ -1137,7 +1248,9 @@
           if (studentDoc.exists()) {
             currentStudentData = studentDoc.data();
             updateUserInfo(currentStudentData);
+            await loadNotificationSettings(user.uid);
             await loadUserAssignments(user.uid);
+            startNotificationCheck();
           } else {
             showAlert("ไม่พบข้อมูลนักเรียน", "error");
             window.location.href = "index.html";
@@ -1346,6 +1459,210 @@
         }
       }
 
+      // Email notification functions
+      async function loadNotificationSettings(userId) {
+        try {
+          const settingsDoc = await getDoc(
+            doc(db, "notificationSettings", userId)
+          );
+          if (settingsDoc.exists()) {
+            const settings = settingsDoc.data();
+            // Always keep notifications enabled, only load email
+            notificationSettings.email = settings.email || "";
+            notificationSettings.lastCheck = settings.lastCheck || null;
+          }
+          updateNotificationUI();
+        } catch (error) {
+          console.error("Error loading notification settings:", error);
+        }
+      }
+
+      async function saveNotificationSettings() {
+        try {
+          if (!currentUser) return;
+
+          const settingsRef = doc(db, "notificationSettings", currentUser.uid);
+
+          await setDoc(settingsRef, {
+            ...notificationSettings,
+            enabled: true, // Always save as enabled
+          });
+
+          showAlert("บันทึกอีเมลสำหรับการแจ้งเตือนสำเร็จ!", "success");
+        } catch (error) {
+          console.error("Error saving notification settings:", error);
+          showAlert("เกิดข้อผิดพลาดในการบันทึกการตั้งค่า", "error");
+        }
+      }
+
+      function updateNotificationUI() {
+        const emailInput = document.getElementById("notificationEmail");
+        emailInput.value = notificationSettings.email || "";
+      }
+
+      async function sendEmailNotification(to, subject, message) {
+        try {
+          showLoading(true);
+
+          // EmailJS parameters
+          const templateParams = {
+            to_email: notificationSettings.email,
+            subject: subject,
+            message: message,
+            from_name: "Assignment Planner",
+            reply_to: "noreply@assignmentplanner.com",
+          };
+
+          // Send email using EmailJS
+          const response = await emailjs.send(
+            EMAILJS_CONFIG.serviceId,
+            EMAILJS_CONFIG.templateId,
+            templateParams
+          );
+
+          console.log("Email sent successfully:", response);
+          showAlert("ส่งอีเมลสำเร็จ! 📧", "success");
+
+          // Store notification record in Firebase
+          if (currentUser) {
+            await addDoc(collection(db, "emailNotifications"), {
+              userId: currentUser.uid,
+              to: to,
+              subject: subject,
+              message: message,
+              sentAt: Timestamp.now(),
+              type: "manual",
+              status: "sent",
+              emailjsResponse: response.status,
+            });
+          }
+        } catch (error) {
+          console.error("Error sending email:", error);
+
+          // Handle specific EmailJS errors
+          let errorMessage = "เกิดข้อผิดพลาดในการส่งอีเมล";
+
+          if (error.status === 400) {
+            errorMessage = "ข้อมูลอีเมลไม่ถูกต้อง กรุณาตรวจสอบอีเมลผู้รับ";
+          } else if (error.status === 402) {
+            errorMessage = "เกินขlímit การส่งอีเมล กรุณาลองใหม่ในเดือนหน้า";
+          } else if (error.status === 403) {
+            errorMessage = "การตั้งค่า EmailJS ไม่ถูกต้อง";
+          } else if (error.status === 404) {
+            errorMessage = "ไม่พบ Template หรือ Service ID";
+          }
+
+          showAlert(errorMessage, "error");
+
+          // Store failed notification record
+          if (currentUser) {
+            await addDoc(collection(db, "emailNotifications"), {
+              userId: currentUser.uid,
+              to: to,
+              subject: subject,
+              message: message,
+              sentAt: Timestamp.now(),
+              type: "manual",
+              status: "failed",
+              error: error.message,
+            });
+          }
+        } finally {
+          showLoading(false);
+        }
+      }
+
+      async function checkAndSendDueNotifications() {
+        // Always check since notifications are always enabled
+        if (!notificationSettings.email) {
+          console.log(
+            "No notification email set, skipping automatic notifications"
+          );
+          return;
+        }
+
+        const now = getBangkokTime();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        const dueSoonAssignments = assignments.filter((assignment) => {
+          if (assignment.completed) return false;
+
+          const dueDate = new Date(assignment.dueDate);
+          const timeDiff = dueDate.getTime() - now.getTime();
+          const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+          return daysDiff === 1; // Due tomorrow
+        });
+
+        for (const assignment of dueSoonAssignments) {
+          // Check if we already sent notification for this assignment
+          const notificationId = `${
+            assignment.id
+          }-${assignment.dueDate.getTime()}`;
+          const alreadySent = localStorage.getItem(
+            `notification_${notificationId}`
+          );
+
+          if (!alreadySent) {
+            const subject = `🚨 งานใกล้ครบกำหนด: ${assignment.title}`;
+            const message = `
+              เรียน ${currentStudentData?.studentId || "นักเรียน"},
+
+              งาน "${assignment.title}" ในวิชา ${
+              assignment.subject
+            } ใกล้ครบกำหนดส่งแล้ว!
+
+              📅 กำหนดส่ง: ${formatAssignmentDue(assignment)}
+              📝 รายละเอียด: ${assignment.description || "ไม่มีรายละเอียด"}
+
+              กรุณาเตรียมงานให้เสร็จเรียบร้อย
+
+              ด้วยความเคารพ,
+              ระบบ Assignment Planner
+            `;
+
+            await sendEmailNotification(
+              notificationSettings.email,
+              subject,
+              message
+            );
+            localStorage.setItem(`notification_${notificationId}`, "sent");
+          }
+        }
+      }
+
+      function startNotificationCheck() {
+        // Check for due assignments every hour
+        setInterval(checkAndSendDueNotifications, 60 * 60 * 1000);
+
+        // Also check immediately
+        setTimeout(checkAndSendDueNotifications, 5000);
+      }
+
+      function showEmailModal(assignmentId) {
+        const assignment = assignments.find((a) => a.id === assignmentId);
+        if (!assignment) return;
+
+        document.getElementById("recipientEmail").value =
+          notificationSettings.email || "";
+        document.getElementById(
+          "emailSubject"
+        ).value = `การแจ้งเตือน: ${assignment.title}`;
+        document.getElementById("emailMessage").value = `
+งาน: ${assignment.title}
+วิชา: ${assignment.subject}
+กำหนดส่ง: ${formatAssignmentDue(assignment)}
+รายละเอียด: ${assignment.description || "ไม่มีรายละเอียด"}
+        `.trim();
+
+        document.getElementById("emailModal").classList.add("active");
+      }
+
+      function closeEmailModal() {
+        document.getElementById("emailModal").classList.remove("active");
+      }
+
       function showTab(tabName) {
         document.querySelectorAll(".tab-btn").forEach((tab) => {
           tab.classList.remove("active");
@@ -1425,6 +1742,11 @@
                   }')">
                     <i class="bi bi-check"></i> เสร็จสิ้น
                   </button>
+                  <button class="btn-small btn-notify" onclick="showEmailModal('${
+                    assignment.id
+                  }')">
+                    <i class="bi bi-envelope"></i> แจ้งเตือน
+                  </button>
                   <button class="btn-small btn-delete" onclick="deleteAssignment('${
                     assignment.id
                   }')">
@@ -1477,6 +1799,11 @@
                   }')">
                     <i class="bi bi-pencil"></i> แก้ไข
                   </button>
+                  <button class="btn-small btn-notify" onclick="showEmailModal('${
+                    exam.id
+                  }')">
+                    <i class="bi bi-envelope"></i> แจ้งเตือน
+                  </button>
                   <button class="btn-small btn-delete" onclick="deleteAssignment('${
                     exam.id
                   }')">
@@ -1509,8 +1836,8 @@
         startDate.setDate(startDate.getDate() - firstDay.getDay());
 
         const calendarHTML = [];
-
         const dayHeaders = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
+
         dayHeaders.forEach((day) => {
           calendarHTML.push(`
             <div class="calendar-day" style="font-weight: 600; background: linear-gradient(135deg, #1e88e5, #1565c0); color: white; cursor: default;">
@@ -1693,6 +2020,7 @@
       }
 
       document.addEventListener("DOMContentLoaded", function () {
+        // Assignment form handler
         document
           .getElementById("assignmentForm")
           .addEventListener("submit", async function (e) {
@@ -1756,11 +2084,54 @@
             this.reset();
           });
 
+        // Email form handler
+        document
+          .getElementById("emailForm")
+          .addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const to = document.getElementById("recipientEmail").value.trim();
+            const subject = document
+              .getElementById("emailSubject")
+              .value.trim();
+            const message = document
+              .getElementById("emailMessage")
+              .value.trim();
+
+            if (!to || !subject || !message) {
+              showAlert("กรุณากรอกข้อมูลให้ครบถ้วน", "error");
+              return;
+            }
+
+            showLoading(true);
+            await sendEmailNotification(to, subject, message);
+            showLoading(false);
+            closeEmailModal();
+            this.reset();
+          });
+
+        // Notification email input handler
+        document
+          .getElementById("notificationEmail")
+          .addEventListener("blur", function (e) {
+            notificationSettings.email = e.target.value.trim();
+            saveNotificationSettings();
+          });
+
+        // Modal click handlers
         document
           .getElementById("assignmentModal")
           .addEventListener("click", function (e) {
             if (e.target === this) {
               closeModal();
+            }
+          });
+
+        document
+          .getElementById("emailModal")
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeEmailModal();
             }
           });
 
@@ -1775,6 +2146,8 @@
       window.completeAssignment = completeAssignment;
       window.changeMonth = changeMonth;
       window.logout = logout;
+      window.showEmailModal = showEmailModal;
+      window.closeEmailModal = closeEmailModal;
     </script>
   </body>
 </html>

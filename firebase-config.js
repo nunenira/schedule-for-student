@@ -1,4 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  initializeApp,
+  getApps,
+  getApp,
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -25,7 +29,7 @@ const firebaseConfig = {
   appId: "1:454469640747:web:991147e163e36e9d2bc06e",
 };
 
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -93,13 +97,21 @@ function updateDashboard(studentData) {
 }
 
 function showAuthPage() {
-  document.getElementById("authPage").classList.add("active");
-  document.getElementById("dashboardPage").classList.remove("active");
+  const authPage = document.getElementById("authPage");
+  const dashboardPage = document.getElementById("dashboardPage");
+  if (authPage && dashboardPage) {
+    authPage.classList.add("active");
+    dashboardPage.classList.remove("active");
+  }
 }
 
 function showDashboardPage() {
-  document.getElementById("authPage").classList.remove("active");
-  document.getElementById("dashboardPage").classList.add("active");
+  const authPage = document.getElementById("authPage");
+  const dashboardPage = document.getElementById("dashboardPage");
+  if (authPage && dashboardPage) {
+    authPage.classList.remove("active");
+    dashboardPage.classList.add("active");
+  }
 }
 
 window.showAuthPage = showAuthPage;

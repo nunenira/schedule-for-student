@@ -182,12 +182,13 @@ function showLogin() {
   const toggleSlider = document.getElementById("toggleSlider");
   const toggleBtns = document.querySelectorAll(".toggle-btn");
 
-  toggleBtns[0].classList.add("active");
-  toggleBtns[1].classList.remove("active");
-  toggleSlider.classList.remove("register");
-
-  registerForm.classList.remove("active");
-  loginForm.classList.add("active");
+  if (toggleBtns.length >= 2) {
+    toggleBtns[0].classList.add("active");
+    toggleBtns[1].classList.remove("active");
+  }
+  if (toggleSlider) toggleSlider.classList.remove("register");
+  if (registerForm) registerForm.classList.remove("active");
+  if (loginForm) loginForm.classList.add("active");
   clearErrors();
 }
 
@@ -812,5 +813,28 @@ document.addEventListener("DOMContentLoaded", function () {
     e.target.value = e.target.value.replace(/[^0-9]/g, "").substring(0, 5);
   });
 });
+
+function handleImageUpload(event) {
+  const file = event.target.files[0];
+  if (!file) {
+    console.warn("No file selected");
+    return;
+  }
+
+  // Example: show the file name
+  console.log("Selected file:", file.name);
+
+  // Optional: show preview (for images)
+  const preview = document.getElementById("imagePreview");
+  if (preview && file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      preview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // TODO: Upload to Firebase Storage if needed
+}
 
 showLogin();

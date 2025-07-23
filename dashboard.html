@@ -2145,6 +2145,11 @@
                     อ่านเพิ่มเติม
                   </button>
                 </div>
+                ${
+                  announcement.imageUrl
+                    ? `<img src="${announcement.imageUrl}" alt="ประกาศ" style="max-width:100%;border-radius:10px;margin-bottom:10px;">`
+                    : ""
+                }
               </div>
             `;
           })
@@ -2282,18 +2287,20 @@
 
       // Schedule functions
       function loadScheduleForClass(gradeLevel, classroom) {
-        if (scheduleData[gradeLevel] && scheduleData[gradeLevel][classroom]) {
-          currentSchedule = scheduleData[gradeLevel][classroom];
+        // แปลง classroom เป็น string เพื่อให้ตรงกับ key
+        const classroomKey = classroom.toString();
+        if (scheduleData[gradeLevel] && scheduleData[gradeLevel][classroomKey]) {
+          currentSchedule = scheduleData[gradeLevel][classroomKey];
           displayScheduleTable();
           displayTodaySchedule();
           updateCurrentClass();
         } else {
           document.getElementById("scheduleContent").innerHTML = `
-            <p style="color: #666; text-align: center; padding: 20px;">
-              <i class="bi bi-calendar-x" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
-              ตารางเรียนสำหรับ ${gradeLevel}/${classroom} ยังไม่พร้อมใช้งาน
-            </p>
-          `;
+      <p style="color: #666; text-align: center; padding: 20px;">
+        <i class="bi bi-calendar-x" style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+        ตารางเรียนสำหรับ ${gradeLevel}/${classroom} ยังไม่พร้อมใช้งาน
+      </p>
+    `;
         }
       }
 
@@ -2411,39 +2418,7 @@
             `;
           })
           .join("");
-
-        todayScheduleContainer.innerHTML = scheduleHTML;
-      }
-
-      function updateCurrentClass() {
-        const now = getBangkokTime();
         const currentTime = now.getHours() * 60 + now.getMinutes();
-        const days = [
-          "Sunday",
-          "Monday",
-          "Tuesday",
-          "Wednesday",
-          "Thursday",
-          "Friday",
-          "Saturday",
-        ];
-        const today = days[now.getDay()];
-
-        if (
-          today === "Sunday" ||
-          today === "Saturday" ||
-          !currentSchedule ||
-          !currentSchedule[today]
-        ) {
-          document.getElementById("currentClassInfo").innerHTML = `
-            <div class="current-class-card">
-              <div class="class-status">วันหยุด</div>
-              <div class="class-name">ไม่มีเรียน</div>
-            </div>
-          `;
-          return;
-        }
-
         let currentClass = null;
         let nextClass = null;
         let currentPeriod = null;
@@ -2648,13 +2623,14 @@
           (a) => a.priority === "high"
         );
 
-        document.getElementById("totalAnnouncements").textContent =
-          allAnnouncements.length;
-        document.getElementById("highPriorityCount").textContent =
-          highPriorityAnnouncements.length;
-        document.getElementById("todayCount").textContent =
-          todayAnnouncements.length;
-        document.getElementById("activeUsers").textContent = "N/A"; // This would require user tracking
+        // Safely update stats only if elements exist
+        const totalElem = document.getElementById("totalAnnouncements");
+        const highElem = document.getElementById("highPriorityCount");
+        const todayElem = document.getElementById("todayCount");
+
+        if (totalElem) totalElem.textContent = allAnnouncements.length;
+        if (highElem) highElem.textContent = highPriorityAnnouncements.length;
+        if (todayElem) todayElem.textContent = todayAnnouncements.length;
       }
 
       function renderRecentAnnouncements() {
