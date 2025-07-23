@@ -1384,11 +1384,11 @@
       <div class="dashboard-header-right">
         <a href="planner.html" class="nav-btn">
           <i class="bi bi-calendar-plus"></i>
-          <span>แพลนเนอร์</span>
+          <span>Planner</span>
         </a>
         <a href="announce.html" class="nav-btn">
           <i class="bi bi-megaphone-fill"></i>
-          <span>ประกาศ</span>
+          <span>Announcement</span>
         </a>
         <div class="user-info">
           <div class="user-avatar">
@@ -2374,10 +2374,9 @@
         const today = now.getDay();
         const todayName = days[today];
 
-        const todayScheduleContainer = document.getElementById(
-          "todayScheduleContent"
-        );
+        const todayScheduleContainer = document.getElementById("todayScheduleContent");
 
+        // วันเสาร์-อาทิตย์
         if (today === 0 || today === 6) {
           todayScheduleContainer.innerHTML = `
             <div style="text-align: center; padding: 20px; color: #666;">
@@ -2385,14 +2384,27 @@
               <p>วันหยุด - ไม่มีเรียน</p>
             </div>
           `;
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card">
+              <div class="class-status">หมดเวลาเรียนแล้ว</div>
+              <div class="class-name">ไม่มีคาบเรียน</div>
+            </div>
+          `;
           return;
         }
 
-        if (!currentSchedule[todayName]) {
+        // ไม่มีข้อมูลตารางเรียนวันนี้
+        if (!currentSchedule || !currentSchedule[todayName] || !Array.isArray(currentSchedule[todayName])) {
           todayScheduleContainer.innerHTML = `
             <div style="text-align: center; padding: 20px; color: #666;">
               <i class="bi bi-calendar-x" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
               <p>ไม่มีตารางเรียนสำหรับวันนี้</p>
+            </div>
+          `;
+          document.getElementById("currentClassInfo").innerHTML = `
+            <div class="current-class-card">
+              <div class="class-status">หมดเวลาเรียนแล้ว</div>
+              <div class="class-name">ไม่มีคาบเรียน</div>
             </div>
           `;
           return;
@@ -2418,6 +2430,9 @@
             `;
           })
           .join("");
+        todayScheduleContainer.innerHTML = scheduleHTML;
+
+        // หาคาบเรียนปัจจุบัน/ถัดไป
         const currentTime = now.getHours() * 60 + now.getMinutes();
         let currentClass = null;
         let nextClass = null;
@@ -2425,7 +2440,6 @@
 
         for (let i = 0; i < timeSlots.length; i++) {
           const slot = timeSlots[i];
-
           const [startHour, startMin] = slot.time
             .split(" - ")[0]
             .split(":")
@@ -2438,16 +2452,14 @@
           const endTime = endHour * 60 + endMin;
 
           if (currentTime >= startTime && currentTime <= endTime) {
-            const subject = currentSchedule[today][slot.period - 1];
+            const subject = todaySubjects[slot.period - 1];
             if (subject && subject.trim() !== "") {
               currentClass = getSubjectName(subject);
               currentPeriod = slot.period;
             }
-
-            // Find next class
+            // หาคาบถัดไป
             for (let j = i + 1; j < timeSlots.length; j++) {
-              const nextSubject =
-                currentSchedule[today][timeSlots[j].period - 1];
+              const nextSubject = todaySubjects[timeSlots[j].period - 1];
               if (nextSubject && nextSubject.trim() !== "") {
                 nextClass = getSubjectName(nextSubject);
                 break;
@@ -2455,7 +2467,7 @@
             }
             break;
           } else if (currentTime < startTime) {
-            const subject = currentSchedule[today][slot.period - 1];
+            const subject = todaySubjects[slot.period - 1];
             if (subject && subject.trim() !== "") {
               nextClass = getSubjectName(subject);
               break;
@@ -2463,6 +2475,7 @@
           }
         }
 
+        // แสดงผลคาบปัจจุบัน/ถัดไป
         if (currentClass) {
           document.getElementById("currentClassInfo").innerHTML = `
             <div class="current-class-card active">
@@ -2473,15 +2486,14 @@
             ${
               nextClass
                 ? `
-                  <div class="next-class-card">
-                    <div class="class-status">คาบต่อไป</div>
-                    <div class="class-name">${nextClass}</div>
-                  </div>
-                `
+              <div class="next-class-card">
+                <div class="class-status">คาบต่อไป</div>
+                <div class="class-name">${nextClass}</div>
+              </div>
+            `
                 : ""
             }
           `;
-
           highlightCurrentPeriod(currentPeriod);
         } else if (nextClass) {
           document.getElementById("currentClassInfo").innerHTML = `
